@@ -1,4 +1,7 @@
-import '/donation.dart';
+import 'package:app_dev_project/utils.dart';
+
+import 'package:app_dev_project/resources/auth_methods.dart';
+import '../../models/donation.dart';
 import 'package:flutter/material.dart';
 
 import 'confirmation_screen.dart';
@@ -18,6 +21,8 @@ class CharityScreen extends StatefulWidget {
 }
 
 class _CharityScreenState extends State<CharityScreen> {
+  bool _isLoading = false;
+
   List<Donations> donationHistory = [
     // Donations(date: DateTime.now(), charityName: 'Harsha', foodMap: {
     //   'Cooked': 4,
@@ -34,16 +39,6 @@ class _CharityScreenState extends State<CharityScreen> {
   int cquantity = 0;
   int uquantity = 0;
   int wquantity = 0;
-
-  void addNewDonation(
-      DateTime chosenDate, String name, Map<String, int> foodmap) {
-    final newDonate =
-        Donations(date: chosenDate, foodMap: foodmap, charityName: name);
-
-    setState(() {
-      donationHistory.add(newDonate);
-    });
-  }
 
   void updateCQuantity(int value) {
     setState(() {
@@ -63,6 +58,39 @@ class _CharityScreenState extends State<CharityScreen> {
     });
   }
 
+  void donateUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    String res = await AuthMethods().donateUser(
+        date: DateTime.now(),
+        charityName: widget.charityName,
+        foodMap: {
+          'Cooked': cquantity,
+          'Uncooked': uquantity,
+          'Water': wquantity,
+        });
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (res != 'success') {
+      showSnackBar(res, context);
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => ConfirmationScreen(donations: {
+            'Cooked': cquantity,
+            'Uncooked': uquantity,
+            'Water': wquantity,
+          }, donationHistory: donationHistory),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,16 +102,16 @@ class _CharityScreenState extends State<CharityScreen> {
             fontSize: 23,
           ),
         ),
-        backgroundColor: Color.fromARGB(255, 30, 5, 5),
+        backgroundColor: const Color.fromARGB(255, 30, 5, 5),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.white],
-          )
-        ),
+            gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.blue, Colors.white],
+        )),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -221,39 +249,30 @@ class _CharityScreenState extends State<CharityScreen> {
               onPressed: () {
                 int totalQuantity = cquantity + uquantity + wquantity;
                 if (totalQuantity >= 5) {
-                  addNewDonation(DateTime.now(), widget.charityName, {
-                    'Cooked': cquantity,
-                    'Uncooked': uquantity,
-                    'Water': wquantity,
-                  });
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ConfirmationScreen(donations: {
-                        'Cooked': cquantity,
-                        'Uncooked': uquantity,
-                        'Water': wquantity,
-                      }, donationHistory: donationHistory),
-                    ),
-                  );
+                  donateUser();
                 } else {
-                  
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Please select a minimum of 5 quantities.'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
+                  showSnackBar(
+                      "Please select a minimum of 5 quantities!", context);
+
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   const SnackBar(
+                  //     content: Text('Please select a minimum of 5 quantities.'),
+                  //     backgroundColor: Colors.red,
+                  //   ),
+                  // );
                 }
               },
-              child: const Text(
-                'Donate',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                ),
-              ),
+              child: _isLoading
+                  ? const CircularProgressIndicator(
+                      color: Colors.white,
+                    )
+                  : const Text(
+                      'Donate',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
             ),
           ],
         ),

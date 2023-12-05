@@ -1,42 +1,73 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'donation.dart';
+import '../models/donation.dart';
 import 'package:intl/intl.dart';
+import 'package:app_dev_project/resources/auth_methods.dart';
 
 class HistoryScreen extends StatelessWidget {
-  final List<Donations> donationHistory;
-
-  const HistoryScreen({Key? key, required this.donationHistory})
+  
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  HistoryScreen({Key? key,})
       : super(key: key);
+
+  Future<List<Donations>> allDonations() async {
+    final snapshot = await _firestore
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('donations')
+        .get();
+    final userData = snapshot.docs.map((e) => Donations.fromSnapshot(e)).toList();
+    return userData;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Donation History',
+          'Donation History:',
           style: TextStyle(
             color: Colors.white,
             fontSize: 23,
           ),
         ),
         backgroundColor: const Color.fromARGB(255, 63, 21, 162),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Padding(
+      body: Container(
+        decoration: const BoxDecoration(
+            gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.white, Colors.blue],
+        )),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Donation History:',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
+          
             const SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                itemCount: donationHistory.length,
-                itemBuilder: (context, index) {
-                  var donation = donationHistory[index];
-                  return DonationBox(donation: donation);
+              child: FutureBuilder<List<Donations>>(
+                future: allDonations(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator(
+                      color: Colors.white,
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    List<Donations> donationHistory = snapshot.data!;
+                    return ListView.builder(
+                      itemCount: donationHistory.length,
+                      itemBuilder: (context, index) {
+                        var donation = donationHistory[index];
+                        return DonationBox(donation: donation);
+                      },
+                    );
+                  }
                 },
               ),
             ),
@@ -46,6 +77,9 @@ class HistoryScreen extends StatelessWidget {
     );
   }
 }
+
+
+
 
 class DonationBox extends StatelessWidget {
   final Donations donation;

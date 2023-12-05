@@ -1,12 +1,17 @@
-
+import 'package:app_dev_project/firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-import 'donor_sign_up_screen.dart';
+import 'screens/donor_sign_up_screen.dart';
 // import 'homePage/home_page2.dart';
-import 'donate_screen.dart';
-import 'login_screen.dart';
+import 'screens/homePage/donate_screen.dart';
+import 'screens/login_screen.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -16,18 +21,35 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'App Project',
+      title: 'Food Donation',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      routes: {
-  '/donate_screen': (context) => const DonateScreen(),
-  
- 
-},
-      home: const LoginPage(),
+      
+      home: StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.active) {
+              if (snapshot.hasData) {
+                return const DonateScreen();
+                
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text('${snapshot.error}'),
+                );
+              }
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+    
+            return const LoginScreen();
+          },
+        ),
     );
   }
 }
@@ -82,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               onPressed: () {
                 // Navigate to login screen
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                       builder: (context) => const LoginScreen()),
@@ -102,9 +124,9 @@ class _LoginPageState extends State<LoginPage> {
                 minimumSize: const Size(300, 40),
               ),
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const DonorSignUpScreen()),
+                  MaterialPageRoute(builder: (context) => const DonorSignupScreen()),
                 );
               },
               child: const Text(

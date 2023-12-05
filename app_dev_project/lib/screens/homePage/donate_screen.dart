@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'homePage/charity_screen.dart';
+import 'charity_screen.dart';
 
 class DonateScreen extends StatefulWidget {
   const DonateScreen({super.key});
@@ -24,48 +24,8 @@ class _DonateScreenState extends State<DonateScreen> {
           ),
         ),
         backgroundColor: Color.fromARGB(255, 30, 5, 5),
-        
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      // drawer: SafeArea(
-      //   child: Drawer(
-      //     child: Column(
-      //       children: [
-      //         const DrawerHeader(
-      //           decoration: BoxDecoration(
-      //             color: Colors.red,
-      //           ),
-      //           child: ListTile(
-      //             title: Text(
-      //               'Flutter Map!',
-      //               style: TextStyle(
-      //                 color: Colors.white,
-      //                 fontSize: 20.0,
-      //               ),
-      //             ),
-      //           ),
-      //         ),
-      //         ListTile(
-      //           onTap: () {},
-      //           leading: const Icon(Icons.settings),
-      //           title: const Text('Settings'),
-      //         ),
-      //         ListTile(
-      //           onTap: () {
-      //             Navigator.of(context).pushReplacement(
-      //               MaterialPageRoute(
-      //                 builder: (BuildContext context) {
-      //                   return const LoginPage();
-      //                 },
-      //               ),
-      //             );
-      //           },
-      //           leading: const Icon(Icons.logout),
-      //           title: const Text('Logout'),
-      //         )
-      //       ],
-      //     ),
-      //   ),
-      // ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(

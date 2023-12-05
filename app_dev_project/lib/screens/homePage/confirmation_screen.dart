@@ -1,4 +1,5 @@
-import 'package:app_dev_project/donation.dart';
+import 'package:app_dev_project/models/donation.dart';
+import 'package:app_dev_project/screens/homePage/donate_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../history_screen.dart';
@@ -22,16 +23,16 @@ class ConfirmationScreen extends StatelessWidget {
             fontSize: 23,
           ),
         ),
-        backgroundColor:  const Color.fromARGB(255, 63, 21, 162),
+        backgroundColor: const Color.fromARGB(255, 63, 21, 162),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.white, Colors.blue],
-          )
-        ),
+            gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.white, Colors.blue],
+        )),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +83,8 @@ class ConfirmationScreen extends StatelessWidget {
                       minimumSize: const Size(200, 40),
                     ),
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/donate_screen');
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => const DonateScreen()));
                     },
                     child: const Text(
                       'Back to Home',
@@ -101,7 +103,7 @@ class ConfirmationScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              HistoryScreen(donationHistory: donationHistory),
+                              HistoryScreen(),
                         ),
                       );
                     },

@@ -1,11 +1,41 @@
 import 'package:app_dev_project/main.dart';
+import 'package:app_dev_project/screens/app_info.dart';
+import 'package:app_dev_project/screens/history_screen.dart';
+import 'package:app_dev_project/screens/homePage/profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'donate_screen.dart';
 
-import '../donate_screen.dart';
+class HomePageScreen extends StatefulWidget {
+  
+  const HomePageScreen({Key? key}) : super(key: key);
 
-class HomePageScreen extends StatelessWidget {
-  final String userName;
-  const HomePageScreen({Key? key, required this.userName}) : super(key: key);
+  @override
+  State<HomePageScreen> createState() => _HomePageScreenState();
+}
+
+class _HomePageScreenState extends State<HomePageScreen> {
+
+  String username = "";
+
+  @override
+  void initState() {
+    super.initState();
+    getUsername();
+  }
+
+  void getUsername() async {
+    DocumentSnapshot snap = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    setState(() {
+      username = (snap.data() as Map<String, dynamic>)['username'];
+    });
+
+  
+}
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +53,25 @@ class HomePageScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              // Handle 'i' button click
+              Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AppInfoScreen()
+            ),
+          );
             },
             icon: const Icon(Icons.info_outline),
             color: Colors.white,
           ),
         ],
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
+
               decoration:const BoxDecoration(
                 color: Color.fromARGB(255, 63, 21, 162),
               ),
@@ -47,7 +84,7 @@ class HomePageScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    userName,
+                    username,
                     style:const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -61,17 +98,12 @@ class HomePageScreen extends StatelessWidget {
         title: const Text('Your Profile'),
         onTap: () {
           // Handle 'Your Profile' button click
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => YourProfileScreen(
-          //       name: name,
-          //       email: email,
-          //       phoneNumber: phoneNumber,
-          //       // Add more properties as needed
-          //     ),
-          //   ),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ProfileScreen()
+            ),
+          );
              },
            ),
   //! Settings
@@ -87,7 +119,7 @@ class HomePageScreen extends StatelessWidget {
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),
               onTap: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const LoginPage()),
@@ -115,7 +147,7 @@ class HomePageScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text(
-                'Hi $userName!',
+                'Welcome $username!',
                 style: TextStyle(fontSize: 21,
                 color: Colors.indigoAccent.shade700,
                 fontWeight: FontWeight.bold),
@@ -141,7 +173,13 @@ class HomePageScreen extends StatelessWidget {
         //! History
               ElevatedButton(
                 onPressed: () {
-                  // Handle 'History' button click
+                  Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              HistoryScreen(),
+                        ),
+                      );
                 },
                 child: Text(
                   'History',
@@ -155,4 +193,6 @@ class HomePageScreen extends StatelessWidget {
       ),
     );
   }
+
+  
 }
