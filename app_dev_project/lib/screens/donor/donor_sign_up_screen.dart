@@ -214,12 +214,12 @@
 //   }
 // }
 
-import 'package:app_dev_project/screens/homePage/home_page.dart';
-import 'package:app_dev_project/screens/login_screen.dart';
+import 'package:app_dev_project/screens/donor/donor_home_page.dart';
+import 'package:app_dev_project/screens/donor/donor_login_screen.dart';
 import 'package:app_dev_project/resources/auth_methods.dart';
 import 'package:app_dev_project/utils.dart';
 import 'package:app_dev_project/widgets/text_field_input.dart';
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 

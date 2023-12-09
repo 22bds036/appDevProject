@@ -1,4 +1,4 @@
-import 'package:app_dev_project/screens/homePage/home_page.dart';
+import 'package:app_dev_project/screens/donor/donor_home_page.dart';
 import 'package:app_dev_project/resources/auth_methods.dart';
 import 'package:app_dev_project/utils.dart';
 import 'package:app_dev_project/widgets/text_field_input.dart';

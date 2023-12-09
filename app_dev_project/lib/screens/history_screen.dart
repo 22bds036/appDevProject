@@ -6,18 +6,20 @@ import 'package:intl/intl.dart';
 import 'package:app_dev_project/resources/auth_methods.dart';
 
 class HistoryScreen extends StatelessWidget {
-  
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  HistoryScreen({Key? key,})
-      : super(key: key);
+  HistoryScreen({
+    Key? key,
+  }) : super(key: key);
 
   Future<List<Donations>> allDonations() async {
     final snapshot = await _firestore
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('donations')
+        .orderBy('date', descending: true)
         .get();
-    final userData = snapshot.docs.map((e) => Donations.fromSnapshot(e)).toList();
+    final userData =
+        snapshot.docs.map((e) => Donations.fromSnapshot(e)).toList();
     return userData;
   }
 
@@ -46,7 +48,6 @@ class HistoryScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          
             const SizedBox(height: 10),
             Expanded(
               child: FutureBuilder<List<Donations>>(
@@ -54,7 +55,7 @@ class HistoryScreen extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator(
-                      color: Colors.white,
+                      color: Colors.blue.shade100,
                     );
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
@@ -77,9 +78,6 @@ class HistoryScreen extends StatelessWidget {
     );
   }
 }
-
-
-
 
 class DonationBox extends StatelessWidget {
   final Donations donation;

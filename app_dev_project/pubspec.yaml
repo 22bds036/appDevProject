@@ -28,14 +28,18 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  cached_network_image: ^3.3.0
   cloud_firestore: ^4.13.3
   cupertino_icons: ^1.0.2
   firebase_auth: ^4.15.0
   firebase_core: ^2.24.0
+  firebase_messaging: ^14.7.6
   firebase_storage: ^11.5.3
   flutter:
     sdk: flutter
+  flutter_local_notifications: ^16.2.0
   flutter_svg: ^2.0.9
+  http: ^1.1.0
   image_picker: ^1.0.4
   intl: ^0.18.1
 
@@ -65,6 +69,7 @@ flutter:
     - images/annamrita(2).png
     - images/donBosco.png
     - images/giveIndia.png
+    - images/charity.png
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

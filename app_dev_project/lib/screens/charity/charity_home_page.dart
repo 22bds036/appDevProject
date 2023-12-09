@@ -1,23 +1,23 @@
 import 'package:app_dev_project/main.dart';
 import 'package:app_dev_project/screens/app_info.dart';
+import 'package:app_dev_project/screens/charity/charity_profile_screen.dart';
 import 'package:app_dev_project/screens/history_screen.dart';
-import 'package:app_dev_project/screens/homePage/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'donate_screen.dart';
+import '../homePage/donate_screen.dart';
 
-class HomePageScreen extends StatefulWidget {
+class CharityHomePageScreen extends StatefulWidget {
   
-  const HomePageScreen({Key? key}) : super(key: key);
+  const CharityHomePageScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomePageScreen> createState() => _HomePageScreenState();
+  State<CharityHomePageScreen> createState() => _CharityHomePageScreenState();
 }
 
-class _HomePageScreenState extends State<HomePageScreen> {
+class _CharityHomePageScreenState extends State<CharityHomePageScreen> {
 
-  String username = "";
+  String charityname = "";
 
   @override
   void initState() {
@@ -27,14 +27,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   void getUsername() async {
     DocumentSnapshot snap = await FirebaseFirestore.instance
-        .collection('users')
+        .collection('charity')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get();
     setState(() {
-      username = (snap.data() as Map<String, dynamic>)['username'];
-    });
-
-  
+      charityname = (snap.data() as Map<String, dynamic>)['charityname'];
+    }); 
 }
 
   @override
@@ -84,7 +82,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    username,
+                    charityname,
                     style:const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -97,11 +95,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
         leading: const Icon(Icons.account_circle),
         title: const Text('Your Profile'),
         onTap: () {
-          // Handle 'Your Profile' button click
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const ProfileScreen()
+              builder: (context) => const CharityProfileScreen()
             ),
           );
              },
@@ -147,7 +144,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
               ),
               const SizedBox(height: 20),
               Text(
-                'Welcome $username!',
+                'Welcome $charityname!',
                 style: TextStyle(fontSize: 21,
                 color: Colors.indigoAccent.shade700,
                 fontWeight: FontWeight.bold),

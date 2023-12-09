@@ -1,54 +1,18 @@
-// import 'package:flutter/material.dart';
-
-// class YourProfileScreen extends StatelessWidget {
-//   final String name;
-//   final String email;
-//   final String phoneNumber;
-
-//   // Add more properties as needed
-
-//   const YourProfileScreen({
-//     Key? key,
-//     required this.name,
-//     required this.email,
-//     required this.phoneNumber,
-//     // Add more properties as needed
-//   }) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Your Profile'),
-//       ),
-//       body: Center(
-//         child: Column(
-//           children: [
-//             Text('Name: $name'),
-//             Text('Email: $email'),
-//             Text('Phone Number: $phoneNumber'),
-//             // Add more Text widgets for additional properties
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+class CharityProfileScreen extends StatefulWidget {
+  const CharityProfileScreen({Key? key}) : super(key: key);
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  _CharityProfileScreenState createState() => _CharityProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _CharityProfileScreenState extends State<CharityProfileScreen> {
   final TextEditingController _addressController = TextEditingController();
-  String username = "";
+  String charityname = "";
   String phone = "";
   String email = "";
   bool isEditing = false;
@@ -56,20 +20,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch user details from Firestore
-    fetchUserDetails();
+    fetchCharityDetails();
   }
 
-  void fetchUserDetails() async {
+  void fetchCharityDetails() async {
     try {
       DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
           .instance
-          .collection('users')
+          .collection('charity')
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .get();
 
       setState(() {
-        username = (snapshot.data() as Map<String, dynamic>)['username'];
+        charityname = (snapshot.data() as Map<String, dynamic>)['charityname'];
       });
 
       setState(() {
@@ -92,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void saveAddress() async {
     try {
       await FirebaseFirestore.instance
-          .collection('users')
+          .collection('charity')
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .update({'address': _addressController.text});
 
@@ -100,10 +63,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         isEditing = false;
       });
 
-      // Optionally, you can show a success message or navigate back
     } catch (e) {
       print("Error saving address: $e");
-      // Handle error
+      
     }
   }
 
@@ -112,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Your Profile',
+          'Your Charity\'s Profile',
           style: TextStyle(
             color: Colors.white,
             fontSize: 23,
@@ -125,32 +87,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
             gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Colors.white, Colors.blue],
+          colors: [Colors.white, Color.fromARGB(255, 63, 21, 162)],
         )),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'User Details:',
+              'Charity Details:',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             Text(
-              'Username: $username',
+              'Charity name: $charityname',
               style: const TextStyle(fontSize: 17),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             Text(
               'Phone number: $phone',
               style: const TextStyle(fontSize: 17),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             Text(
               'E-mail ID: $email',
               style: const TextStyle(fontSize: 17),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             Row(
               children: [
                 Expanded(
@@ -179,6 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // Save the address
                       saveAddress();
                     }
+                    
                   },
                 ),
               ],
